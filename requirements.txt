@@ -1,3 +1,8 @@
 flask
 flask_sqlalchemy
 datetime
+pymysql
+mysqlclient
+os
+Flask-Migrate
+base64

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewJeans Albums</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #E7F2F8; /* Light blue background */
+            color: #22577A; /* Dark blue text */
+        }
+        h1 {
+            color: #38A3A5; /* Teal color */
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .album-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .album-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .album-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .album-card h3 {
+            color: #38A3A5; /* Teal color */
+            margin-bottom: 10px;
+        }
+        .album-details {
+            display: none;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .album-details img {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>NewJeans Albums</h1>
+    <div id="albums" class="album-grid"></div>
+    <div id="albumDetails" class="album-details"></div>
+
+    <script>
+        function fetchAlbums() {
+            fetch('/albums')
+                .then(response => response.json())
+                .then(albums => {
+                    const albumsContainer = document.getElementById('albums');
+                    albumsContainer.innerHTML = '';
+                    albums.forEach(album => {
+                        const albumCard = document.createElement('div');
+                        albumCard.className = 'album-card';
+                        albumCard.innerHTML = `
+                            <img src="data:image/jpeg;base64,${album.image_data}" alt="${album.title}">
+                            <h3>${album.title}</h3>
+                            <p>Release Date: ${album.release_date}</p>
+                        `;
+                        albumCard.onclick = () => showAlbumDetails(album.id);
+                        albumsContainer.appendChild(albumCard);
+                    });
+                })
+                .catch(error => console.error('Error fetching albums:', error));
+        }
+
+        function showAlbumDetails(albumId) {
+            fetch(`/album/${albumId}`)
+                .then(response => response.json())
+                .then(album => {
+                    const detailsContainer = document.getElementById('albumDetails');
+                    detailsContainer.style.display = 'block';
+                    detailsContainer.innerHTML = `
+                        <h2>${album.title}</h2>
+                        <img src="data:image/jpeg;base64,${album.image_data}" alt="${album.title}">
+                        <p>Release Date: ${album.release_date}</p>
+                        <p>Total Tracks: ${album.total_tracks}</p>
+                    `;
+                })
+                .catch(error => console.error('Error fetching album details:', error));
+        }
+
+        fetchAlbums();
+    </script>
+</body>
+</html>
