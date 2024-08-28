@@ -11,7 +11,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'album_image
 ALLOWED_EXTENSIONS = {}
 #ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-password = os.getenv("NJ_ALBUM_PASSWORD", "password")
+password = os.getenv("NJ_ALBUM_PASSWORD", "hanni_pham123")
 
 # Configure database
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://newjeans_user:{password}@localhost/newjeans_albums"
@@ -126,4 +126,4 @@ def index():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
