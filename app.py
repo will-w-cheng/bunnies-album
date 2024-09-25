@@ -4,17 +4,16 @@ from datetime import datetime
 import os 
 from flask_migrate import Migrate
 import base64
+import mysql
 
 app = Flask(__name__)
 app.config['STATIC_FOLDER'] = 'static'
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'album_images')
 ALLOWED_EXTENSIONS = {}
-#ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 password = os.getenv("NJ_ALBUM_PASSWORD", "hanni_pham123")
 
 # Configure database
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://newjeans_user:{password}@localhost/newjeans_albums"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://newjeans_user:{password}@localhost:3306/newjeans_albums"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize database
@@ -43,10 +42,6 @@ class Album(db.Model):
             'total_tracks': self.total_tracks,
             'image_path': self.image_path,
         }
-# def allowed_file(filename):
-#     for i in filename.split('.'):
-#         if i in ALLOWED_EXTENSIONS:
-#             return '.'
 
 # Create an album
 @app.route('/album', methods=['POST'])
@@ -118,6 +113,7 @@ def delete_album(id):
     db.session.commit()
     return '', 204
 
+# Frontpage of the album covers
 @app.route('/')
 def index():
     return render_template('albums.html')
@@ -126,4 +122,4 @@ def index():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port="5050")

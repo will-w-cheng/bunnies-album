@@ -13,15 +13,16 @@
             background-color: #E7F2F8; /* Light blue background */
             color: #22577A; /* Dark blue text */
         }
-        h1, h2 {
+        h1 {
             color: #38A3A5; /* Teal color */
             text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
         }
         .album-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 30px;
-            margin-top: 30px;
         }
         .album-card {
             background-color: white;
@@ -42,6 +43,10 @@
             border-radius: 10px;
             margin-bottom: 15px;
         }
+        .album-card h3 {
+            color: #38A3A5; /* Teal color */
+            margin-bottom: 10px;
+        }
         .album-details {
             display: none;
             background-color: white;
@@ -50,48 +55,15 @@
             margin-top: 30px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .upload-form {
-            background-color: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .upload-form form {
-            display: flex;
-            flex-direction: column;
-        }
-        .upload-form input, .upload-form button {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #38A3A5;
-        }
-        .upload-form button {
-            background-color: #38A3A5;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .upload-form button:hover {
-            background-color: #2C7A7B;
+        .album-details img {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <h1>NewJeans Albums</h1>
-    
-    <div class="upload-form">
-        <h2>Upload New Album</h2>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <input type="text" name="title" placeholder="Album Title" required>
-            <input type="date" name="release_date" required>
-            <input type="number" name="total_tracks" placeholder="Total Tracks" required>
-            <input type="file" name="image" accept="image/*" required>
-            <button type="submit">Upload Album</button>
-        </form>
-    </div>
-
     <div id="albums" class="album-grid"></div>
     <div id="albumDetails" class="album-details"></div>
 
@@ -125,32 +97,13 @@
                     detailsContainer.style.display = 'block';
                     detailsContainer.innerHTML = `
                         <h2>${album.title}</h2>
-                        <img src="data:image/jpeg;base64,${album.image_data}" alt="${album.title}" style="max-width: 300px;">
+                        <img src="data:image/jpeg;base64,${album.image_data}" alt="${album.title}">
                         <p>Release Date: ${album.release_date}</p>
                         <p>Total Tracks: ${album.total_tracks}</p>
                     `;
                 })
                 .catch(error => console.error('Error fetching album details:', error));
         }
-
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            
-            fetch('/album', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                fetchAlbums();  // Refresh the album list
-                this.reset();  // Clear the form
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        });
 
         fetchAlbums();
     </script>
